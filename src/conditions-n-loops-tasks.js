@@ -443,22 +443,89 @@ function rotateMatrix(matrix) {
  */
 function sortByAsc(arr) {
   const res = arr;
-  for (let i = 0; i < arr.length; i += 1) {
-    let min = i;
-    for (let j = i + 1; j < arr.length; j += 1) {
-      if (arr[min] > arr[j]) {
-        min = j;
+  let longest = Math.floor(Math.log10(arr[0] < 0 ? arr[0] * -1 : arr[0])) + 1;
+  for (let i = 1; i < arr.length; i += 1) {
+    let longestTmp =
+      Math.floor(Math.log10(arr[i] < 0 ? arr[i] * -1 : arr[i])) + 1;
+    if (arr[i] === 0) {
+      longestTmp = 1;
+    }
+    if (longestTmp > longest) longest = longestTmp;
+  }
+
+  let tmpArr = [
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ];
+
+  for (let rank = 1; rank <= longest; rank += 1) {
+    for (let i = 0; i < res.length; i += 1) {
+      let digit;
+      if (res[i] < 0) {
+        digit = Math.floor(((-1 * res[i]) / 10 ** (rank - 1)) % 10);
+      } else {
+        digit = Math.floor((res[i] / 10 ** (rank - 1)) % 10) + 10;
+      }
+      tmpArr[digit][tmpArr[digit].length] = res[i];
+    }
+
+    let resIndex = 0;
+    for (let rankArr = 9; rankArr >= 0; rankArr -= 1) {
+      for (let j = 0; j < tmpArr[rankArr].length; j += 1) {
+        res[resIndex] = tmpArr[rankArr][j];
+        resIndex += 1;
       }
     }
-    if (min !== i) {
-      const temp = res[i];
-      res[i] = res[min];
-      res[min] = temp;
+    for (let rankArr = 10; rankArr < 20; rankArr += 1) {
+      for (let j = 0; j < tmpArr[rankArr].length; j += 1) {
+        res[resIndex] = tmpArr[rankArr][j];
+        resIndex += 1;
+      }
     }
+    tmpArr = [
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+      [],
+    ];
   }
+
   return res;
 }
-
 /**
  * Shuffles characters in a string so that the characters with an odd index are moved to the end of the string at each iteration.
  * Take into account that the string can be very long and the number of iterations is large. Consider how you can optimize your solution.
